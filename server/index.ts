@@ -15,6 +15,13 @@ app.post("/reprice", async (_req: Request, res: Response) => {
 
     const products: Product[] = JSON.parse(fileContent);
 
+    if (!Array.isArray(products)) {
+      res.status(400).json({
+        error: "Products data must be an array",
+      });
+      return;
+    }
+
     const results = products.map(calculatePrice);
 
     res.json(results);
