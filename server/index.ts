@@ -17,7 +17,7 @@ app.post("/reprice", async (_req: Request, res: Response) => {
 
     if (!Array.isArray(products)) {
       res.status(400).json({
-        error: "Products data must be an array",
+        error: "Products должен быть массивом",
       });
       return;
     }
