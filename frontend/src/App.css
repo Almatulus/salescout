@@ -44,8 +44,6 @@ button {
   font: inherit;
 }
 
-/* Страница */
-
 .page {
   width: 100%;
   max-width: 1440px;
@@ -57,7 +55,7 @@ button {
 .page-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 24px;
   margin-bottom: 32px;
 }
@@ -117,8 +115,6 @@ button {
   opacity: 0.6;
 }
 
-/* Карточка таблицы */
-
 .table-card {
   overflow: hidden;
   border: 1px solid var(--border);
@@ -150,8 +146,6 @@ button {
   color: var(--text-muted);
   font-size: 12px;
 }
-
-/* Таблица */
 
 .table-scroll {
   width: 100%;
@@ -203,8 +197,6 @@ tbody tr:hover {
   font-variant-numeric: tabular-nums;
 }
 
-/* Изменение цены */
-
 .change,
 .reason {
   display: inline-flex;
@@ -230,8 +222,6 @@ tbody tr:hover {
   color: var(--text-muted);
 }
 
-/* Причины переоценки */
-
 .reason.UNDERCUT {
   background: var(--accent-bg);
   color: var(--accent);
@@ -251,8 +241,6 @@ tbody tr:hover {
   background: #252a37;
   color: #b7bfce;
 }
-
-/* Пустое состояние и ошибки */
 
 .empty-state {
   display: flex;
@@ -276,8 +264,6 @@ tbody tr:hover {
   background: #30191e;
   color: #fca5a5;
 }
-
-/* Адаптивность */
 
 @media (max-width: 768px) {
   .page {

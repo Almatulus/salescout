@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 interface PriceResult {
@@ -25,30 +25,27 @@ function formatPrice(price: number) {
 
 function App() {
   const [products, setProducts] = useState<PriceResult[]>([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function loadPrices() {
-    setLoading(true);
-    setError("");
+  useEffect(() => {
+    const loadPrices = async () => {
+      try {
+        const response = await fetch("/reprice", { method: "POST" });
 
-    try {
-      const response = await fetch("/reprice", {
-        method: "POST",
-      });
+        if (!response.ok) {
+          throw new Error("Не удалось загрузить цены");
+        }
 
-      if (!response.ok) {
-        throw new Error("Не удалось загрузить цены");
+        const data: PriceResult[] = await response.json();
+        setProducts(data);
+        setError("");
+      } catch {
+        setError("Не удалось загрузить товары. Проверь соединение с сервером.");
       }
+    };
 
-      const data: PriceResult[] = await response.json();
-      setProducts(data);
-    } catch {
-      setError("Не удалось загрузить товары. Проверь соединение с сервером.");
-    } finally {
-      setLoading(false);
-    }
-  }
+    loadPrices();
+  }, []);
 
   return (
     <main className="page">
@@ -60,14 +57,6 @@ function App() {
             Результаты расчёта цен на основе предложений конкурентов
           </p>
         </div>
-
-        <button
-          className="primary-button"
-          onClick={loadPrices}
-          disabled={loading}
-        >
-          {loading ? "Загрузка..." : "Пересчитать цены"}
-        </button>
       </header>
 
       <section className="table-card">
@@ -78,19 +67,13 @@ function App() {
 
         {error && <p className="error-message">{error}</p>}
 
-        {!error && products.length === 0 && !loading && (
+        {!error && products.length === 0 && (
           <div className="empty-state">
-            <p>Нажми «Пересчитать цены», чтобы загрузить товары.</p>
+            <p>Загружаем товары...</p>
           </div>
         )}
 
-        {loading && (
-          <div className="empty-state">
-            <p>Получаем результаты расчёта...</p>
-          </div>
-        )}
-
-        {!loading && products.length > 0 && (
+        {products.length > 0 && (
           <div className="table-scroll">
             <table>
               <thead>
@@ -102,11 +85,9 @@ function App() {
                   <th>Причина</th>
                 </tr>
               </thead>
-
               <tbody>
                 {products.map((product) => {
                   const difference = product.newPrice - product.oldPrice;
-
                   return (
                     <tr key={product.sku}>
                       <td className="sku">{product.sku}</td>
@@ -116,13 +97,7 @@ function App() {
                       </td>
                       <td>
                         <span
-                          className={`change ${
-                            difference < 0
-                              ? "decrease"
-                              : difference > 0
-                                ? "increase"
-                                : "unchanged"
-                          }`}
+                          className={`change ${difference < 0 ? "decrease" : difference > 0 ? "increase" : "unchanged"}`}
                         >
                           {difference > 0 ? "+" : ""}
                           {formatPrice(difference)}
